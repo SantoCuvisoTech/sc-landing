@@ -1,0 +1,91 @@
+---
+import { LANGUAGES, SITE_URL, type Language } from "@/i18n/config";
+import { getLocalizedPath } from "@/i18n/utils";
+
+interface Props {
+  title: string;
+  description: string;
+  keywords?: string;
+  lang: Language;
+  image?: string;
+  type?: "website" | "article" | "product";
+  noindex?: boolean;
+  canonicalURL?: string;
+}
+
+const {
+  title,
+  description,
+  keywords,
+  lang,
+  image = "/og-default.jpg", // Imagen por defecto
+  type = "website",
+  noindex = false,
+  canonicalURL,
+} = Astro.props;
+
+const currentPath = Astro.url.pathname;
+const canonical = canonicalURL || `${SITE_URL}${currentPath}`;
+
+// Generar URLs alternativas para hreflang
+const alternateURLs = Object.keys(LANGUAGES).map((l) => ({
+  lang: LANGUAGES[l as Language].locale,
+  url: `${SITE_URL}${getLocalizedPath(currentPath, l as Language)}`,
+}));
+
+const ogImageURL = image.startsWith("http") ? image : `${SITE_URL}${image}`;
+const languageConfig = LANGUAGES[lang];
+---
+
+<!-- Meta tags básicos -->
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="generator" content={Astro.generator} />
+
+<!-- SEO básico -->
+<title>{title}</title>
+<meta name="description" content={description} />
+{keywords && <meta name="keywords" content={keywords} />}
+<link rel="canonical" href={canonical} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+
+<!-- Language & Locale -->
+<html lang={languageConfig.locale} dir={languageConfig.dir}></html>
+
+<!-- Hreflang tags para i18n -->
+{
+  alternateURLs.map(({ lang: locale, url }) => (
+    <link rel="alternate" hreflang={locale} href={url} />
+  ))
+}
+<!-- x-default apunta al idioma por defecto (inglés) -->
+<link
+  rel="alternate"
+  hreflang="x-default"
+  href={`${SITE_URL}${getLocalizedPath(currentPath, "en")}`}
+/>
+
+<!-- Open Graph (Facebook, LinkedIn) -->
+<meta property="og:type" content={type} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogImageURL} />
+<meta property="og:locale" content={languageConfig.locale} />
+<meta property="og:site_name" content="Santo Cuviso" />
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImageURL} />
+
+<!-- Favicons (ajusta las rutas según tus archivos) -->
+<link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+<link rel="manifest" href="/site.webmanifest" />
+
+<!-- Theme color (ajusta al color de tu marca) -->
+<meta name="theme-color" content="#1a1a1a" />

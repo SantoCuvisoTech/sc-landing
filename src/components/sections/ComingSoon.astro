@@ -1,0 +1,112 @@
+---
+import { Image } from "astro:assets";
+import type { Language } from "../../i18n/config";
+import { useTranslations } from "../../i18n/utils";
+// import logo from ""
+
+interface Props {
+  lang: Language;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<div
+  class="relative min-h-screen flex items-center justify-center px-4 overflow-hidden border-y border-gold"
+>
+  <div class="absolute inset-0 bg-gradient-gold pointer-events-none"></div>
+  <div class="relative z-10 max-w-5xl w-full flex flex-col items-center">
+    <!-- Subtitle -->
+    <p
+      class="text-[10px] sm:text-xs md:text-sm tracking-wide text-gray-400 opacity-0 uppercase"
+      data-animate="fade-up"
+      data-delay="0"
+    >
+      {t.sections.comingSoon.subtitle}
+    </p>
+
+    <!-- Main Title -->
+    <!-- <div
+      class="text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-serif font-bold text-gold mb-4 sm:mb-6 md:mb-8 opacity-0"
+      data-animate="fade-up"
+      data-delay="200"
+    > -->
+    <div
+      class="my-6 w-full max-w-2xl mx-auto opacity-0"
+      data-animate="fade-up"
+      data-delay="200"
+    >
+      <Image
+        src="/images/logo.webp"
+        alt="Logo Santo Cuviso"
+        width={800}
+        height={800}
+        class="w-full h-auto"
+        loading="eager"
+      />
+    </div>
+    <!-- {t.sections.comingSoon.title} -->
+    <!-- </div> -->
+
+    <!-- Coming Soon Text -->
+    <p
+      class="text-xl sm:text-2xl text-gray-400 tracking-wide mb-6 sm:mb-8 md:mb-10 opacity-0 font-light uppercase"
+      data-animate="fade-up"
+      data-delay="600"
+    >
+      {t.sections.comingSoon.comingSoonText}
+    </p>
+
+    <!-- Description -->
+    <p
+      class="text-base text-gray-600 opacity-0 max-w-3xl mx-auto"
+      data-animate="fade-up"
+      data-delay="800"
+    >
+      {t.sections.comingSoon.description}
+    </p>
+
+    <!-- Reveal Text -->
+    <p
+      class="text-base text-gray-600 opacity-0 max-w-2xl mx-auto"
+      data-animate="fade-up"
+      data-delay="1000"
+    >
+      {t.sections.comingSoon.reveal}
+    </p>
+  </div>
+</div>
+
+<script>
+  import { animate } from "motion";
+
+  // Función de animación fade-up
+  function animateElements() {
+    const elements = document.querySelectorAll('[data-animate="fade-up"]');
+
+    elements.forEach((element) => {
+      const delay = parseInt(element.getAttribute("data-delay") || "0");
+
+      animate(
+        element,
+        {
+          opacity: [0, 1],
+          y: [30, 0], // Sube desde 30px abajo
+        } as any,
+        {
+          duration: 0.8,
+          delay: delay / 1000, // Convertir ms a segundos
+          easing: [0.22, 1, 0.36, 1], // easeOutExpo - suave y elegante
+        } as any,
+      );
+    });
+  }
+
+  // Ejecutar animaciones cuando el DOM esté listo
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", animateElements);
+  } else {
+    animateElements();
+  }
+</script>

@@ -1,0 +1,16 @@
+---
+import ComingSoon from "../../components/sections/ComingSoon.astro";
+import Layout from "../../layouts/Layout.astro";
+import { useTranslations } from "../../i18n/utils";
+
+const t = useTranslations("en");
+---
+
+<Layout
+  title={t.seo.comingSoon.title}
+  description={t.seo.comingSoon.description}
+  keywords={t.seo.comingSoon.keywords}
+  lang="en"
+>
+  <ComingSoon lang="en" />
+</Layout>
